@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { ContactDto, CreateContactDto, UpdateContactDto } from './dto/contact.dto';
-import { StatusDto } from '../../shared/status.dto';
+import { StatusDto } from '$shared/status.dto';
 import { ContactsRepository } from './contacts.repository';
 
 @Injectable()

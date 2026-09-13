@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ContactDto, CreateContactDto, UpdateContactDto } from './dto/contact.dto';
-import { StatusDto } from '../../shared/status.dto';
+import { StatusDto } from '$shared/status.dto';
 import { ContactsService } from './contacts.service';
 
 @Controller('contacts')
