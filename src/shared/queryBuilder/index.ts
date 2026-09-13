@@ -10,7 +10,7 @@ export class Query {
   }
 
   addSelect(field: string, alias?: string) {
-    this.query.select.push((alias ? [field, alias] : [field]).join(' as '))
+    this.query.select.push((alias ? [field, `"${alias}"`] : [field]).join(' as '))
 
     return this
   }
@@ -36,11 +36,13 @@ export class Query {
   }
 
   getQuery() {
-    let query = [`FROM ${this.query.from}`]
+    let query: string[] = []
 
     if (this.query.select.length) {
       query.push(`SELECT ${this.query.select.join()}`)
     }
+
+    query.push(`FROM ${this.query.from}`)
 
     if (this.query.filter.length) {
       query.push(`WHERE ${this.query.filter.join('AND')}`)

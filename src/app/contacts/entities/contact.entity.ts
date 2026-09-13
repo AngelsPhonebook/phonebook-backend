@@ -5,20 +5,20 @@ export class ContactEntity {
 
   phone: string
 
-  firstName?: string
+  first_name: string
 
-  lastName?: string
+  last_name: string
 
-  email?: string
+  email: string
 
-  notes?: string
+  notes: string
 
   static schema: ObjectSchema<ContactEntity> = object({
     id: string().required().uuid(),
     phone: string().required(),
-    firstName: string().optional(),
-    lastName: string().optional(),
-    email: string().optional(),
-    notes: string().optional(),
+    first_name: string().defined(),
+    last_name: string().defined(),
+    email: string().defined(),
+    notes: string().defined(),
   })
 }

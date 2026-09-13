@@ -8,16 +8,16 @@ export class ContactDto {
   phone: string
 
   @ApiProperty()
-  firstName?: string
+  firstName: string
 
   @ApiProperty()
-  lastName?: string
+  lastName: string
 
   @ApiProperty()
-  email?: string
+  email: string
 
   @ApiProperty()
-  notes?: string
+  notes: string
 }
 
 export class CreateContactDto extends OmitType(ContactDto, ['id'] as const) {}

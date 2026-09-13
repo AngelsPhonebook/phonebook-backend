@@ -31,7 +31,7 @@ export class ContactsRepository {
 
   async deleteContact(id: string): Promise<StatusDto> {
     await this.dbService.query(
-      `DELETE FROM contacts WHERE id = $1`,
+      `DELETE FROM contacts WHERE id = $1::uuid`,
       [id]
     )
 
@@ -40,11 +40,16 @@ export class ContactsRepository {
     }
   }
 
-  async updateContact(id: string, data: UpdateContactDto): Promise<ContactEntity | undefined> {
-    const { statements, values } = makeUpdateFields(data)
+  async updateContact(id: string, data: UpdateContactDto): Promise<ContactEntity> {
+    const {firstName: first_name, lastName: last_name, ...rest} = data;
+    const { statements, values } = makeUpdateFields({
+      first_name,
+      last_name,
+      ...rest
+    })
 
     const { rows } = await this.dbService.query(
-      `UPDATE contacts SET ${statements.join()} WHERE id = $${values.length + 1} RETURNING *`,
+      `UPDATE contacts SET ${statements.join()} WHERE id = $${values.length + 1}::uuid RETURNING *`,
       [...values, id]
     )
 
@@ -53,8 +58,13 @@ export class ContactsRepository {
     return contact
   }
 
-  async createContact(data: CreateContactDto): Promise<ContactEntity | undefined> {
-    const { keys, placeholders, values } = makeInsertFields(data)
+  async createContact(data: CreateContactDto): Promise<ContactEntity> {
+    const {firstName: first_name, lastName: last_name, ...rest} = data;
+    const { keys, placeholders, values } = makeInsertFields({
+      first_name,
+      last_name,
+      ...rest
+    })
 
     const { rows } = await this.dbService.query(
       `INSERT INTO contacts (${keys}) VALUES (${placeholders}) RETURNING *`,
