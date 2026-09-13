@@ -2,37 +2,45 @@ import { INITIAL_QUERY } from "./constants";
 import { FilterField, QueryObject } from "./types";
 
 export class Query {
-  private query: QueryObject = INITIAL_QUERY;
-  private params: unknown[] = []
+  private query: QueryObject;
+  private params: unknown[];
 
-  constructor(table: string) {
-    this.query.from = table
+  constructor(table?: string) {
+    this.query = structuredClone(INITIAL_QUERY);
+    this.params = [];
+
+    if (table) {
+      this.query.from = table;
+    }
   }
 
   addSelect(field: string, alias?: string) {
-    this.query.select.push((alias ? [field, `"${alias}"`] : [field]).join(' as '))
+    const next = this.clone();
+    next.query.select.push((alias ? [field, `"${alias}"`] : [field]).join(' as '))
 
-    return this
+    return next
   }
 
   addFilter(filter: FilterField, ...params: unknown[]) {
-    this.query.filter.push(filter)
+    const next = this.clone();
+    next.query.filter.push(filter)
+    next.params.push(...params)
 
-    this.params.push(...params)
-
-    return this
+    return next
   }
 
   addSort(field: string, direction?: 'ASC' | 'DESC') {
-    this.query.sort.push(`${field} ${direction}`)
+    const next = this.clone();
+    next.query.sort.push(`${field} ${direction}`)
 
-    return this
+    return next
   }
 
   addGroupBy(groupBy: string) {
-    this.query.groupBy.push(groupBy)
+    const next = this.clone();
+    next.query.groupBy.push(groupBy)
 
-    return this
+    return next
   }
 
   getQuery() {
@@ -45,7 +53,7 @@ export class Query {
     query.push(`FROM ${this.query.from}`)
 
     if (this.query.filter.length) {
-      query.push(`WHERE ${this.query.filter.join('AND')}`)
+      query.push(`WHERE ${this.query.filter.join(' AND ')}`)
     }
 
     if (this.query.groupBy.length) {
@@ -53,12 +61,20 @@ export class Query {
     }
 
     if (this.query.sort.length) {
-      query.push(`SORT ${this.query.sort.join()}`)
+      query.push(`ORDER BY ${this.query.sort.join()}`)
     }
 
     return {
       queryString: query.join(' '),
       params: this.params
     }
+  }
+
+  private clone(): Query {
+    const copy = new Query();
+    copy.query = structuredClone(this.query);
+    copy.params = [...this.params];
+
+    return copy;
   }
 }
