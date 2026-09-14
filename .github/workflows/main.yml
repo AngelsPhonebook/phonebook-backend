@@ -1,4 +1,4 @@
-name: Main Landing Action
+name: Backend Deploy
 
 on:
   push:
