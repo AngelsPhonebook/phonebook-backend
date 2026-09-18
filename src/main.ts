@@ -5,13 +5,15 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Все ресурсы бекенда живут под /api (nginx: /phonebook/api/ -> бекенду на /api/).
+  // Без этого контроллер contacts был на /contacts, и через nginx до него не добраться —
+  // /phonebook/contacts попадал во фронтенд (SPA), а не в API.
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('Телефонная книга')
     .setDescription('Бекенд-сервис для телефонной книги')
     .setVersion('1.0')
-    // Базовый сервер Swagger. В проде бекенд живут по под-пути /phonebook/, поэтому в серверном
-    // .env задан SWAGGER_BASE_URL=/phonebook (иначе "Try it out" слал бы запросы на /contacts ->
-    // на магазин, а не на справочник). Локально переменной нет -> '/', Swagger ходит от корня.
     .addServer(process.env.SWAGGER_BASE_URL ?? '/')
     .build();
     
