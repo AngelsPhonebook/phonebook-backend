@@ -9,6 +9,10 @@ async function bootstrap() {
     .setTitle('Телефонная книга')
     .setDescription('Бекенд-сервис для телефонной книги')
     .setVersion('1.0')
+    // Базовый сервер Swagger. В проде бекенд живут по под-пути /phonebook/, поэтому в серверном
+    // .env задан SWAGGER_BASE_URL=/phonebook (иначе "Try it out" слал бы запросы на /contacts ->
+    // на магазин, а не на справочник). Локально переменной нет -> '/', Swagger ходит от корня.
+    .setBasePath(process.env.SWAGGER_BASE_URL ?? '/')
     .build();
     
   const documentFactory = () => SwaggerModule.createDocument(app, config);
