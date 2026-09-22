@@ -3,11 +3,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
-  // Все ресурсы бекенда живут под /api (nginx: /phonebook/api/ -> бекенду на /api/).
-  // Без этого контроллер contacts был на /contacts, и через nginx до него не добраться —
-  // /phonebook/contacts попадал во фронтенд (SPA), а не в API.
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
