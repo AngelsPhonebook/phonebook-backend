@@ -5,7 +5,7 @@ on:
     branches: [ "master" ]
 
 jobs: 
-  deploy:
+  push-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,4 +23,14 @@ jobs:
           tags: ${{ vars.DOCKERHUB_USER }}/${{ vars.DOCKER_IMAGE }}
           cache-from: type=registry,ref=${{ vars.DOCKERHUB_USER }}/${{ vars.DOCKER_IMAGE }}:latest
           cache-to: type=inline
-      
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run deploy script
+        uses: appleboy/ssh-action@v1
+        with:
+          host: angels-shop.ru
+          username: ${{ vars.RUNNER_USER }}
+          key: ${{ secrets.RUNNER_KEY }}
+          port: 22
+          script: 'whoami'
