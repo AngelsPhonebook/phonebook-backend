@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool, QueryResultRow } from 'pg';
+import { uuid } from '../../../lib/uuid';
 
 @Injectable()
 export class DbService implements OnModuleDestroy {
@@ -25,16 +26,18 @@ export class DbService implements OnModuleDestroy {
     query: string,
     params: unknown[] | undefined = undefined,
   ) {
+    let queryId = uuid();
+
     try {
-      this.logger.debug(query, params);
+      this.logger.debug(`Запрос - ${queryId}`, query, params);
 
       const res = await this.pool.query<R>(query, params);
       
-      this.logger.debug(res)
+      this.logger.debug(`Ответ запроса - ${queryId}`, res)
 
       return res;
     } catch (err) {
-      this.logger.error(err);
+      this.logger.error(err, `Ошибка запроса - ${queryId}`);
       throw err;
     }
   }

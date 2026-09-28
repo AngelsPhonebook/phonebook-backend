@@ -34,4 +34,6 @@ jobs:
           username: ${{ vars.RUNNER_USER }}
           key: ${{ secrets.RUNNER_KEY }}
           port: 22
-          script: 'whoami'
+          script: |
+            cd ${{vars.PROJECT_PATH}}
+            
