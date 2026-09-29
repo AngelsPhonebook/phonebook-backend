@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType, OmitType } from "@nestjs/swagger";
-import { IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class ContactDto {
   @ApiProperty()
@@ -8,6 +8,7 @@ export class ContactDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   phone: string
 
   @ApiProperty()
